@@ -326,6 +326,38 @@
             opacity: 0.9;
         }
 
+        #wishes-container {
+            position: relative;
+            min-height: 200px;
+            margin: 1.5rem auto;
+            max-width: 500px;
+        }
+
+        .wish {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.3rem;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: scale(0) translateY(20px);
+            animation: wishAppear 0.6s ease-out forwards;
+        }
+
+        .wish-1 { background: var(--pink-light); color: #7A3B55; }
+        .wish-2 { background: var(--green-light); color: #2D5A3F; }
+        .wish-3 { background: var(--peach); color: #8B5E3C; }
+        .wish-4 { background: #D4E8FF; color: #3A5A7C; }
+        .wish-5 { background: #F5E6FF; color: #6B3A8A; }
+        .wish-6 { background: #FFF3CD; color: #7A6520; }
+
+        @keyframes wishAppear {
+            0% { opacity: 0; transform: scale(0) translateY(20px); }
+            60% { transform: scale(1.15) translateY(-5px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
         .heart {
             font-size: 3rem;
             margin-top: 1.5rem;
@@ -358,13 +390,13 @@
 
 <!-- ECRAN D'ACCUEIL -->
 <section id="welcome">
-    <div style="font-size:4rem;margin-bottom:1rem;">&#127874;</div>
-    <h1>Joyeux Anniversaire<br>Jean !</h1>
+    <div style="font-size:4rem;margin-bottom:1rem;">&#10084;&#65039;</div>
+    <h1>Jean,</h1>
     <p class="subtitle">
         Ceux qui t'aiment ont quelque chose à te dire...
     </p>
     <button class="btn-start" onclick="startExperience()">
-        Découvrir mes surprises
+        Découvrir
     </button>
 </section>
 
@@ -373,12 +405,12 @@
     <div class="counter" id="counter">0 / 11 surprises découvertes</div>
     <div class="gifts-grid" id="gifts-grid"></div>
     <div id="finale">
-        <h2>Toute ta famille te souhaite<br>un merveilleux anniversaire !</h2>
-        <p>
-            Chaque voix, chaque image, chaque vidéo<br>
-            est un peu d'amour envoyé de loin.<br>
+        <div style="font-size:5rem;margin-bottom:1rem;">&#127874;</div>
+        <h2>Joyeux Anniversaire<br>Jean !</h2>
+        <div id="wishes-container"></div>
+        <p style="margin-top:2rem;">
             On est là, on a besoin de toi,<br>
-            et on t'aime fort, Jean.
+            et on t'aime fort.
         </p>
         <div class="heart">&hearts;</div>
     </div>
@@ -546,35 +578,59 @@ document.addEventListener("keydown", (e) => {
 });
 
 // === FINALE ===
+const WISHES = [
+    "Santé", "Bonheur", "Longue vie", "Force",
+    "Amour", "Joie", "Courage", "Sérénité",
+    "Paix", "Lumière", "Rires", "Famille",
+    "Espoir", "Tendresse", "Fierté", "Guérison"
+];
+
 function showFinale() {
     const finale = document.getElementById("finale");
     finale.classList.add("active");
 
-    // Gros confettis de celebration
-    const duration = 3000;
+    // Scroller vers la finale
+    setTimeout(() => {
+        finale.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
+
+    // Feu d'artifice continu (8 secondes)
+    const duration = 8000;
     const end = Date.now() + duration;
     (function frame() {
+        // Fusees depuis differents points
         confetti({
-            particleCount: 4,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 },
-            colors: ["#E8A0BF", "#A8D5BA", "#F5D56E"]
+            particleCount: 8,
+            angle: 60 + Math.random() * 30,
+            spread: 60 + Math.random() * 40,
+            origin: { x: Math.random() * 0.3, y: 0.7 + Math.random() * 0.2 },
+            colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#D4E8FF", "#F5E6FF"],
+            gravity: 0.8,
+            ticks: 200
         });
         confetti({
-            particleCount: 4,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 },
-            colors: ["#E8A0BF", "#A8D5BA", "#F5D56E"]
+            particleCount: 8,
+            angle: 90 + Math.random() * 30,
+            spread: 60 + Math.random() * 40,
+            origin: { x: 0.7 + Math.random() * 0.3, y: 0.7 + Math.random() * 0.2 },
+            colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#D4E8FF", "#F5E6FF"],
+            gravity: 0.8,
+            ticks: 200
         });
         if (Date.now() < end) requestAnimationFrame(frame);
     })();
 
-    // Scroller vers la finale
-    setTimeout(() => {
-        finale.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 500);
+    // Souhaits qui apparaissent un par un
+    const container = document.getElementById("wishes-container");
+    WISHES.forEach((wish, i) => {
+        setTimeout(() => {
+            const el = document.createElement("span");
+            el.className = `wish wish-${(i % 6) + 1}`;
+            el.style.animationDelay = "0s";
+            el.textContent = wish;
+            container.appendChild(el);
+        }, 800 + i * 350);
+    });
 }
 </script>
 
