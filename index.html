@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joyeux Anniversaire Tonton Jean</title>
+    <title>Joyeux Anniversaire Jean</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -358,26 +358,28 @@
 
 <!-- ECRAN D'ACCUEIL -->
 <section id="welcome">
-    <h1>Joyeux Anniversaire<br>Tonton Jean !</h1>
+    <div style="font-size:4rem;margin-bottom:1rem;">&#127874;</div>
+    <h1>Joyeux Anniversaire<br>Jean !</h1>
     <p class="subtitle">
-        Ta famille t'a prepare des surprises...<br>
+        Ceux qui t'aiment ont quelque chose à te dire...<br>
         Chaque cadeau contient un message rien que pour toi.
     </p>
     <button class="btn-start" onclick="startExperience()">
-        Decouvrir mes surprises
+        Découvrir mes surprises
     </button>
 </section>
 
 <!-- GRILLE DE CADEAUX -->
 <section id="gifts-section">
-    <div class="counter" id="counter">0 / 11 surprises decouvertes</div>
+    <div class="counter" id="counter">0 / 11 surprises découvertes</div>
     <div class="gifts-grid" id="gifts-grid"></div>
     <div id="finale">
         <h2>Toute ta famille te souhaite<br>un merveilleux anniversaire !</h2>
         <p>
-            Chaque voix, chaque image, chaque video<br>
-            est un peu d'amour envoye de loin.<br>
-            On t'aime fort, Tonton Jean.
+            Chaque voix, chaque image, chaque vidéo<br>
+            est un peu d'amour envoyé de loin.<br>
+            On est là, on a besoin de toi,<br>
+            et on t'aime fort, Jean.
         </p>
         <div class="heart">&hearts;</div>
     </div>
@@ -478,7 +480,7 @@ function openGift(gift, box) {
 
 function updateCounter() {
     document.getElementById("counter").textContent =
-        `${openedCount} / ${GIFTS.length} surprises decouvertes`;
+        `${openedCount} / ${GIFTS.length} surprises découvertes`;
 }
 
 // === MODAL ===
@@ -520,7 +522,7 @@ function showModal(gift) {
         mediaEl.innerHTML = `
             <video class="modal-video" controls autoplay playsinline id="current-audio">
                 <source src="${gift.file}" type="video/mp4">
-                Ton navigateur ne supporte pas la video.
+                Ton navigateur ne supporte pas la vidéo.
             </video>
         `;
         currentAudio = document.getElementById("current-audio");
