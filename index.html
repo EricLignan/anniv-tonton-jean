@@ -450,7 +450,8 @@
 
 <script>
 // === CONFIGURATION DES CADEAUX ===
-const GIFTS = [
+// Fallback inline (utilise si fetch echoue, ex: ouverture en file://)
+const GIFTS_FALLBACK = [
     { id: 1,  name: "Madeleine",    type: "audio", file: "assets/madeleine.mp3",       image: "assets/madeleine.jpeg" },
     { id: 2,  name: "Roxane",        type: "audio", file: "assets/roxane.mp3",          image: null },
     { id: 3,  name: "Elissa",        type: "audio", file: "assets/elissa.mp3",          image: "assets/elissa.jpeg" },
@@ -463,6 +464,7 @@ const GIFTS = [
     { id: 10, name: "Sondi et Tanti Fran\u00e7oise", type: "video", file: "assets/sondi-francoise.mp4", image: null },
     { id: 11, name: "Nadine et Tatiana",              type: "video", file: "assets/nadine-tatiana.mp4",  image: null },
 ];
+let GIFTS = [...GIFTS_FALLBACK];
 
 const ICONS = ["🎁", "🎀", "🎊", "🎉", "🎈", "🎂", "🎵", "💌", "🌟", "✨", "💛"];
 let openedCount = 0;
@@ -500,8 +502,21 @@ function fadeInMusic(duration = 800) {
     }, interval);
 }
 
+// === CHARGEMENT GIFTS.JSON ===
+async function loadGifts() {
+    try {
+        const response = await fetch('gifts.json');
+        if (!response.ok) throw new Error(response.status);
+        GIFTS = await response.json();
+    } catch (e) {
+        // Fallback : donnees inline (file:// ou reseau indisponible)
+        GIFTS = [...GIFTS_FALLBACK];
+    }
+}
+
 // === DEMARRAGE ===
-function startExperience() {
+async function startExperience() {
+    await loadGifts();
     document.getElementById("welcome").style.display = "none";
     document.getElementById("gifts-section").style.display = "block";
     renderGrid();

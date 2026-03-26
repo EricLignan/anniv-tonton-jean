@@ -1,0 +1,79 @@
+[
+    {
+        "id": 1,
+        "name": "Madeleine",
+        "type": "audio",
+        "file": "assets/madeleine.mp3",
+        "image": "assets/madeleine.jpeg"
+    },
+    {
+        "id": 2,
+        "name": "Roxane",
+        "type": "audio",
+        "file": "assets/roxane.mp3",
+        "image": null
+    },
+    {
+        "id": 3,
+        "name": "Elissa",
+        "type": "audio",
+        "file": "assets/elissa.mp3",
+        "image": "assets/elissa.jpeg"
+    },
+    {
+        "id": 4,
+        "name": "Francine",
+        "type": "audio",
+        "file": "assets/francine.mp3",
+        "image": null
+    },
+    {
+        "id": 5,
+        "name": "Cyril",
+        "type": "audio",
+        "file": "assets/cyril.mp3",
+        "image": null
+    },
+    {
+        "id": 6,
+        "name": "Eric",
+        "type": "audio",
+        "file": "assets/eric.mp3",
+        "image": null
+    },
+    {
+        "id": 7,
+        "name": "Junior",
+        "type": "audio",
+        "file": "assets/junior.mp3",
+        "image": null
+    },
+    {
+        "id": 8,
+        "name": "Blanche",
+        "type": "audio",
+        "file": "assets/blanche.mp3",
+        "image": null
+    },
+    {
+        "id": 9,
+        "name": "Eugène",
+        "type": "audio",
+        "file": "assets/eugene.mp3",
+        "image": null
+    },
+    {
+        "id": 10,
+        "name": "Sondi et Tanti Françoise",
+        "type": "video",
+        "file": "assets/sondi-francoise.mp4",
+        "image": null
+    },
+    {
+        "id": 11,
+        "name": "Nadine et Tatiana",
+        "type": "video",
+        "file": "assets/nadine-tatiana.mp4",
+        "image": null
+    }
+]
