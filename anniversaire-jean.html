@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joyeux Anniversaire Jean</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        // Detection mode lite : ?lite=1 OU connexion lente
+        const params = new URLSearchParams(window.location.search);
+        const LITE = params.has('lite') || (navigator.connection && navigator.connection.effectiveType && ['slow-2g','2g','3g'].includes(navigator.connection.effectiveType));
+        if (!LITE) {
+            // Charger Google Fonts uniquement en mode complet
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://fonts.googleapis.com/css2?family=Secular+One&family=Inter:wght@400;600&display=swap';
+            document.head.appendChild(link);
+        }
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -24,7 +34,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--cream);
             color: var(--text);
             min-height: 100vh;
@@ -498,17 +508,27 @@
     </div>
 </div>
 
-<!-- Musique de fond -->
-<audio id="bg-music" loop preload="auto">
+<!-- Musique de fond (pas en mode lite) -->
+<audio id="bg-music" loop preload="none">
     <source src="assets/background-jazz.mp3" type="audio/mpeg">
 </audio>
 
-<!-- canvas-confetti CDN -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<!-- balloons-js CDN -->
-<script type="module" id="balloons-module">
-    import { balloons } from 'https://cdn.jsdelivr.net/npm/balloons-js@0.0.3/+esm';
-    window.launchBalloons = balloons;
+<!-- CDN confetti + balloons (pas en mode lite) -->
+<script>
+    if (!LITE) {
+        // canvas-confetti
+        const s1 = document.createElement('script');
+        s1.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
+        document.head.appendChild(s1);
+        // balloons-js
+        const s2 = document.createElement('script');
+        s2.type = 'module';
+        s2.textContent = "import { balloons } from 'https://cdn.jsdelivr.net/npm/balloons-js@0.0.3/+esm'; window.launchBalloons = balloons;";
+        document.head.appendChild(s2);
+    } else {
+        // Stub confetti pour eviter les erreurs
+        window.confetti = function() {};
+    }
 </script>
 
 <script>
@@ -544,7 +564,7 @@ let currentAudio = null;
 let allOpened = false;
 const bgMusic = document.getElementById("bg-music");
 const BG_VOLUME = 0.15;
-bgMusic.volume = BG_VOLUME;
+if (!LITE) bgMusic.volume = BG_VOLUME;
 
 function fadeOutMusic(duration = 800) {
     const steps = 20;
@@ -594,10 +614,12 @@ async function startExperience() {
     document.getElementById("gifts-section").style.display = "block";
     renderGrid();
     initCandles();
-    // Demarrer la musique de fond (apres interaction utilisateur = autorise par les navigateurs)
-    bgMusic.play().catch(() => {});
-    // Petit confetti d'accueil
-    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    if (!LITE) {
+        // Demarrer la musique de fond (apres interaction utilisateur = autorise par les navigateurs)
+        bgMusic.play().catch(() => {});
+        // Petit confetti d'accueil
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    }
 }
 
 // === GRILLE ===
@@ -637,8 +659,8 @@ function openGift(gift, box) {
     updateCounter();
     showModal(gift);
 
-    // Confettis
-    confetti({
+    // Confettis (pas en mode lite)
+    if (!LITE) confetti({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
@@ -736,7 +758,7 @@ function showModal(gift) {
 
     modal.classList.add("active");
     // Fondu sortant de la musique de fond
-    fadeOutMusic(800);
+    if (!LITE) fadeOutMusic(800);
 }
 
 function closeModal(event) {
@@ -751,7 +773,7 @@ function closeModal(event) {
     if (allOpened) {
         triggerFinale();
     } else {
-        fadeInMusic(800);
+        if (!LITE) fadeInMusic(800);
     }
 }
 
@@ -800,40 +822,43 @@ function showFinale() {
     finale.classList.add("active");
 
     // Musique de fond pour la finale
-    fadeInMusic(800);
+    if (!LITE) fadeInMusic(800);
 
-    // Ballons SVG 3D (balloons-js) — 3 vagues
-    if (window.launchBalloons) {
-        window.launchBalloons();
-        setTimeout(() => window.launchBalloons(), 2000);
-        setTimeout(() => window.launchBalloons(), 4500);
+    if (!LITE) {
+        // Ballons SVG 3D (balloons-js) — 3 vagues
+        if (window.launchBalloons) {
+            window.launchBalloons();
+            setTimeout(() => window.launchBalloons(), 2000);
+            setTimeout(() => window.launchBalloons(), 4500);
+        }
     }
 
-    // Feu d'artifice continu (8 secondes)
-    const duration = 8000;
-    const end = Date.now() + duration;
-    (function frame() {
-        // Fusees depuis differents points
-        confetti({
-            particleCount: 8,
-            angle: 60 + Math.random() * 30,
-            spread: 60 + Math.random() * 40,
-            origin: { x: Math.random() * 0.3, y: 0.7 + Math.random() * 0.2 },
-            colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#D4E8FF", "#F5E6FF"],
-            gravity: 0.8,
-            ticks: 200
-        });
-        confetti({
-            particleCount: 8,
-            angle: 90 + Math.random() * 30,
-            spread: 60 + Math.random() * 40,
-            origin: { x: 0.7 + Math.random() * 0.3, y: 0.7 + Math.random() * 0.2 },
-            colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#D4E8FF", "#F5E6FF"],
-            gravity: 0.8,
-            ticks: 200
-        });
-        if (Date.now() < end) requestAnimationFrame(frame);
-    })();
+    // Feu d'artifice continu — reduit en lite
+    if (!LITE) {
+        const duration = 8000;
+        const end = Date.now() + duration;
+        (function frame() {
+            confetti({
+                particleCount: 8,
+                angle: 60 + Math.random() * 30,
+                spread: 60 + Math.random() * 40,
+                origin: { x: Math.random() * 0.3, y: 0.7 + Math.random() * 0.2 },
+                colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#D4E8FF", "#F5E6FF"],
+                gravity: 0.8,
+                ticks: 200
+            });
+            confetti({
+                particleCount: 8,
+                angle: 90 + Math.random() * 30,
+                spread: 60 + Math.random() * 40,
+                origin: { x: 0.7 + Math.random() * 0.3, y: 0.7 + Math.random() * 0.2 },
+                colors: ["#E8A0BF", "#A8D5BA", "#F5D56E", "#D4E8FF", "#F5E6FF"],
+                gravity: 0.8,
+                ticks: 200
+            });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+    }
 
     // Souhaits qui apparaissent un par un
     const container = document.getElementById("wishes-container");
